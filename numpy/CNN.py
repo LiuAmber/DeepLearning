@@ -156,7 +156,6 @@ def distribute_value(dz, shape):
 
     return a
 
-
 def pool_backward(dA, cache, mode="max"):
     # 获取cache中的值
     (A_prev, hparaeters) = cache
