@@ -15,7 +15,6 @@ def conv_single_step(a_slice_prev,w,b):
     z = np.sum(s)
     return z
 
-
 def conv_forward(A_prev, W, b, hparameters):
 
     # 获取来自上一层数据的基本信息
