@@ -7,8 +7,8 @@ import glob
 from matplotlib.patches import Rectangle
 from PIL import Image
 
-class LoadVOCdata:
-    def __init__(self, path,S,B,C,image_resize):
+class LoadVocData:
+    def __init__(self, path,S = 7,B = 2,C = 20,image_resize = [448,448]):
         self.path = path
         self.images_path = glob.glob(path + "\\JPEGImages\\*.jpg")
         self.xmls_path = (path + "\\Annotations\\*.xml")
@@ -89,11 +89,13 @@ class LoadVOCdata:
           for j in range(len(xmins_n[i])):
             S_i = int((xmaxs_n[i][j]+ xmins_n[i][j])/2*self.S)
             S_j = int((ymaxs_n[i][j]+ ymins_n[i][j])/2*self.S)
+            # 0和1为置信度
             label_tensor[i][S_i][S_j][0] = 1
-            label_tensor[i][S_i][S_j][1] = xmins_n[i][j]
-            label_tensor[i][S_i][S_j][2] = ymins_n[i][j]
-            label_tensor[i][S_i][S_j][3] = xmaxs_n[i][j]-xmins_n[i][j]
-            label_tensor[i][S_i][S_j][4] = ymaxs_n[i][j]-ymins_n[i][j]
+            #若B = 2 ,2-9为bounding box的两组x,y,w,h
+            label_tensor[i][S_i][S_j][2] = xmins_n[i][j]
+            label_tensor[i][S_i][S_j][3] = ymins_n[i][j]
+            label_tensor[i][S_i][S_j][4] = xmaxs_n[i][j]-xmins_n[i][j]
+            label_tensor[i][S_i][S_j][5] = ymaxs_n[i][j]-ymins_n[i][j]
             label_tensor[i][S_i][S_j][self.B*5+class_num[i][j]] = 1
         return label_tensor
 
@@ -155,6 +157,7 @@ class LoadVOCdata:
             plt.show()
 
 PATH = 'C:\\Users\\10372\\Desktop\\VOC\\VOCdevkit\\VOC2012'
-DATA = LoadVOCdata(PATH,S = 14,B = 2,C = 20,image_resize=[224,224])
+DATA = LoadVocData(PATH,S = 14,B = 2,C = 20,image_resize=[224,224])
 c = DATA.train_data(32)
 DATA.test(c)
+
